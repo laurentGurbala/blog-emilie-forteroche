@@ -1,6 +1,6 @@
 <?php
 
-require_once 'config/config.php';
+require_once 'config/_config.php';
 require_once 'config/autoload.php';
 
 // On récupère l'action demandée par l'utilisateur.
@@ -11,7 +11,7 @@ $action = Utils::request('action', 'home');
 try {
     // Pour chaque action, on appelle le bon contrôleur et la bonne méthode.
     switch ($action) {
-        // Pages accessibles à tous.
+            // Pages accessibles à tous.
         case 'home':
             $articleController = new ArticleController();
             $articleController->showHome();
@@ -21,8 +21,8 @@ try {
             $articleController = new ArticleController();
             $articleController->showApropos();
             break;
-        
-        case 'showArticle': 
+
+        case 'showArticle':
             $articleController = new ArticleController();
             $articleController->showArticle();
             break;
@@ -38,8 +38,8 @@ try {
             break;
 
 
-        // Section admin & connexion. 
-        case 'admin': 
+            // Section admin & connexion. 
+        case 'admin':
             $adminController = new AdminController();
             $adminController->showAdmin();
             break;
@@ -49,7 +49,7 @@ try {
             $adminController->displayConnectionForm();
             break;
 
-        case 'connectUser': 
+        case 'connectUser':
             $adminController = new AdminController();
             $adminController->connectUser();
             break;
@@ -64,7 +64,7 @@ try {
             $adminController->showUpdateArticleForm();
             break;
 
-        case 'updateArticle': 
+        case 'updateArticle':
             $adminController = new AdminController();
             $adminController->updateArticle();
             break;
