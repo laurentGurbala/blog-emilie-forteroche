@@ -10,7 +10,7 @@ class CommentManager extends AbstractEntityManager
      * @param int $idArticle : l'id de l'article.
      * @return array : un tableau d'objets Comment.
      */
-    public function getAllCommentsByArticleId(int $idArticle) : array
+    public function getAllCommentsByArticleId(int $idArticle): array
     {
         $sql = "SELECT * FROM comment WHERE id_article = :idArticle";
         $result = $this->db->query($sql, ['idArticle' => $idArticle]);
@@ -22,12 +22,20 @@ class CommentManager extends AbstractEntityManager
         return $comments;
     }
 
+    public function countCommentsByArticleId(int $idArticle): int
+    {
+        $sql = "SELECT COUNT(*) AS total FROM comment WHERE id_article = :id_article";
+        $stmt = $this->db->query($sql, ["id_article" => $idArticle]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result["total"] ?? 0;
+    }
+
     /**
      * Récupère un commentaire par son id.
      * @param int $id : l'id du commentaire.
      * @return Comment|null : un objet Comment ou null si le commentaire n'existe pas.
      */
-    public function getCommentById(int $id) : ?Comment
+    public function getCommentById(int $id): ?Comment
     {
         $sql = "SELECT * FROM comment WHERE id = :id";
         $result = $this->db->query($sql, ['id' => $id]);
@@ -43,7 +51,7 @@ class CommentManager extends AbstractEntityManager
      * @param Comment $comment : l'objet Comment à ajouter.
      * @return bool : true si l'ajout a réussi, false sinon.
      */
-    public function addComment(Comment $comment) : bool
+    public function addComment(Comment $comment): bool
     {
         $sql = "INSERT INTO comment (pseudo, content, id_article, date_creation) VALUES (:pseudo, :content, :idArticle, NOW())";
         $result = $this->db->query($sql, [
@@ -59,11 +67,10 @@ class CommentManager extends AbstractEntityManager
      * @param Comment $comment : l'objet Comment à supprimer.
      * @return bool : true si la suppression a réussi, false sinon.
      */
-    public function deleteComment(Comment $comment) : bool
+    public function deleteComment(Comment $comment): bool
     {
         $sql = "DELETE FROM comment WHERE id = :id";
         $result = $this->db->query($sql, ['id' => $comment->getId()]);
         return $result->rowCount() > 0;
     }
-
 }

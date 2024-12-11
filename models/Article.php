@@ -10,6 +10,7 @@ class Article extends AbstractEntity
     private string $title = "";
     private string $content = "";
     private int $nbView;
+    private int $nbComments;
     private ?DateTime $dateCreation = null;
     private ?DateTime $dateUpdate = null;
 
@@ -97,6 +98,25 @@ class Article extends AbstractEntity
     {
         return $this->nbView;
     }
+
+    /**
+     * Setter pour le nombre de commentaires.
+     * @param int $nbComments
+     */
+    public function setNbComments(int $nbComments): void
+    {
+        $this->nbComments = $nbComments;
+    }
+
+    /**
+     * Getter pour le nombre de commentaires.
+     * @return int
+     */
+    public function getNbComments(): int
+    {
+        return $this->nbComments;
+    }
+
     /**
      * Setter pour la date de création. Si la date est une string, on la convertit en DateTime.
      * @param string|DateTime $dateCreation
