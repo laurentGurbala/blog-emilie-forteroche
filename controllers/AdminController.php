@@ -42,6 +42,34 @@ class AdminController
             $nbComment = $commentManager->countCommentsByArticleId($article->getId());
             $article->setNbComments($nbComment);
         }
+
+        // Récupère les paramètres de tri
+        $sort = Utils::request("sort", "title");
+        $order = Utils::request("order", "asc");
+
+        usort($articles, function ($a, $b) use ($sort, $order) {
+            $sortableColumns = [
+                'title' => 'getTitle',
+                'views' => 'getNbView',
+                'comments' => 'getNbComments',
+                'date' => 'getDateCreation'
+            ];
+
+            if (!isset($sortableColumns[$sort])) {
+                throw new Exception("Colonne de tri invalide.");
+            }
+
+            $valueA = $a->{$sortableColumns[$sort]}(); // Appel via le mapping
+            $valueB = $b->{$sortableColumns[$sort]}();
+
+            if ($order === 'asc') {
+                return $valueA <=> $valueB; // Comparaison ascendante
+            } else {
+                return $valueB <=> $valueA; // Comparaison descendante
+            }
+        });
+
+
         // On affiche la page de monitoring
         $view = new View("Administration");
         $view->render("monitoring", ["articles" => $articles]);

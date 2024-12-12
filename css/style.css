@@ -353,8 +353,8 @@ a.info {
 
 .articleLine .title {
     font-weight: bold;
-    min-width: 200px;
-    width: 200px;
+    min-width: 350px;
+    width: 350px;
 }
 
 .articleLine .content {
@@ -363,15 +363,15 @@ a.info {
 
 .articleLine .views {
     font-weight: bold;
-    min-width: 80px;
-    width: 80px;
+    min-width: 100px;
+    width: 100px;
 }
 
 .articleLine .comments {
     margin: 0;
     font-weight: bold;
-    min-width: 150px;
-    width: 150px;
+    min-width: 170px;
+    width: 170px;
 }
 
 .articleLine .date {
