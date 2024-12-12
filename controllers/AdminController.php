@@ -27,6 +27,12 @@ class AdminController
         ]);
     }
 
+    /**
+     * Affiche la page de monitoring.
+     * Permet de trier et de voir les statistiques des articles.
+     * 
+     * @return void
+     */
     public function showMonitoring(): void
     {
         // On vérifie que l'utilisateur est connecté
@@ -47,19 +53,38 @@ class AdminController
         $sort = Utils::request("sort", "title");
         $order = Utils::request("order", "asc");
 
-        usort($articles, function ($a, $b) use ($sort, $order) {
-            $sortableColumns = [
-                'title' => 'getTitle',
-                'views' => 'getNbView',
-                'comments' => 'getNbComments',
-                'date' => 'getDateCreation'
-            ];
+        // Trie les articles
+        $articles = $this->sortArticles($articles, $sort, $order);
 
-            if (!isset($sortableColumns[$sort])) {
-                throw new Exception("Colonne de tri invalide.");
-            }
+        // On affiche la page de monitoring
+        $view = new View("Administration");
+        $view->render("monitoring", ["articles" => $articles]);
+    }
 
-            $valueA = $a->{$sortableColumns[$sort]}(); // Appel via le mapping
+    /**
+     * Trie une liste d'articles en fonction de la colonne et de l'ordre spécifiés.
+     * 
+     * @param array $articles Liste des articles à trier.
+     * @param string $sort Colonne à utiliser pour le tri (ex. 'title', 'views').
+     * @param string $order Ordre de tri ('asc' ou 'desc').
+     * 
+     * @return array Liste triée des articles.
+     */
+    private function sortArticles(array $articles, string $sort, string $order): array
+    {
+        $sortableColumns = [
+            'title' => 'getTitle',
+            'views' => 'getNbView',
+            'comments' => 'getNbComments',
+            'date' => 'getDateCreation'
+        ];
+
+        if (!isset($sortableColumns[$sort])) {
+            throw new Exception("Colonne de tri invalide.");
+        }
+
+        usort($articles, function ($a, $b) use ($sortableColumns, $sort, $order) {
+            $valueA = $a->{$sortableColumns[$sort]}();
             $valueB = $b->{$sortableColumns[$sort]}();
 
             if ($order === 'asc') {
@@ -69,10 +94,7 @@ class AdminController
             }
         });
 
-
-        // On affiche la page de monitoring
-        $view = new View("Administration");
-        $view->render("monitoring", ["articles" => $articles]);
+        return $articles;
     }
 
     /**
