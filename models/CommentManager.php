@@ -22,14 +22,6 @@ class CommentManager extends AbstractEntityManager
         return $comments;
     }
 
-    public function countCommentsByArticleId(int $idArticle): int
-    {
-        $sql = "SELECT COUNT(*) AS total FROM comment WHERE id_article = :id_article";
-        $stmt = $this->db->query($sql, ["id_article" => $idArticle]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result["total"] ?? 0;
-    }
-
     /**
      * Récupère un commentaire par son id.
      * @param int $id : l'id du commentaire.
