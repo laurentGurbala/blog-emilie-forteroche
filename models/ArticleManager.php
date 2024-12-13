@@ -21,6 +21,46 @@ class ArticleManager extends AbstractEntityManager
         return $articles;
     }
 
+    public function getAllArticlesSorted(string $sort, string $order): array
+    {
+        $sortableColumns = [
+            'title' => 'title',
+            'views' => 'nb_view',
+            'date' => 'date_creation',
+            'comments' => 'nb_comments'
+        ];
+
+        // Vérifie que la colonne demandée est triable
+        if (!isset($sortableColumns[$sort])) {
+            throw new Exception("Colonne de tri invalide : $sort");
+        }
+
+        // Vérifie que l'ordre est valide
+        if (!in_array($order, ['asc', 'desc'])) {
+            $order = 'desc';
+        }
+
+        // Construction de la requête SQL avec le calcul des commentaires
+        $sql = "SELECT a.*, 
+           (SELECT COUNT(*) FROM comment c WHERE c.id_article = a.id) AS nb_comments
+            FROM article a
+            ORDER BY {$sortableColumns[$sort]} $order
+        ";
+
+        // Exécute la requête
+        $result = $this->db->query($sql);
+
+        // Transforme chaque ligne en objet Article
+        $articles = [];
+        foreach ($result as $row) {
+            $article = new Article($row);
+            $article->setNbComments($row['nb_comments']);
+            $articles[] = $article;
+        }
+
+        return $articles;
+    }
+
     /**
      * Récupère un article par son id.
      * @param int $id : l'id de l'article.
