@@ -51,6 +51,33 @@ class AdminController
         $view->render("monitoring", ["articles" => $articles]);
     }
 
+    public function showComments(): void
+    {
+        // Vérifie que l'utilisateur est connecté
+        $this->checkIfUserIsConnected();
+
+        // Récupérer l'ID de l'article
+        $articleId = Utils::request("articleId", -1);
+
+        // Récupérer l'article
+        $articleManager = new ArticleManager();
+        $article = $articleManager->getArticleById($articleId);
+        if (!$article) {
+            throw new Exception("Article non trouvé");
+        }
+
+        // Récupérer les commentaires
+        $commentManager = new CommentManager();
+        $comments = $commentManager->getAllCommentsByArticleId($articleId);
+
+        // Afficher la vue
+        $view = new View("Administration");
+        $view->render("adminComments", [
+            "article" => $article,
+            "comments" => $comments
+        ]);
+    }
+
     /**
      * Vérifie que l'utilisateur est connecté.
      * @return void
@@ -200,6 +227,21 @@ class AdminController
         $articleManager->deleteArticle($id);
 
         // On redirige vers la page d'administration.
+        Utils::redirect("admin");
+    }
+
+    public function deleteComment(): void
+    {
+        $this->checkIfUserIsConnected();
+
+        // Récupérer l'ID du commentaire
+        $commentId = Utils::request("commentId", -1);
+
+        // Supprimer le commentaire
+        $commentManager = new CommentManager();
+        $commentManager->deleteCommentById($commentId);
+
+        // Rediriger vers la page d'administration
         Utils::redirect("admin");
     }
 }

@@ -46,7 +46,11 @@ function generateSortLink(string $column, ?string $currentSort, ?string $current
         <div class="articleLine">
             <div class="title"><?= $article->getTitle() ?></div>
             <div class="views"><?= $article->getNbView() ?></div>
-            <div class="comments"><?= $article->getNbComments() ?></div>
+            <div class="comments">
+                <a href="index.php?action=adminComments&articleId=<?= $article->getId() ?>">
+                    <?= $article->getNbComments() ?>
+                </a>
+            </div>
             <div class="date"><?= Utils::convertDateToFrenchFormat($article->getDateCreation()) ?></div>
         </div>
     <?php endforeach; ?>
