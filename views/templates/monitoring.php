@@ -3,6 +3,22 @@
 $sort = Utils::request("sort");
 $orderTri = Utils::request("order");
 
+/**
+ * Génère un lien de tri pour une colonne donnée.
+ *
+ * @param string $column Nom de la colonne pour le tri.
+ * @param ?string $currentSort Colonne actuellement triée (ou null si aucun tri).
+ * @param ?string $currentOrder Ordre actuel (asc, desc, ou null si aucun tri).
+ * @param string $label Label à afficher pour le lien.
+ * @return string Lien HTML pour le tri.
+ */
+function generateSortLink(string $column, ?string $currentSort, ?string $currentOrder, string $label): string
+{
+    $newOrder = $currentSort === $column && $currentOrder === "asc" ? "desc" : "asc";
+    $arrow = $currentSort === $column ? ($currentOrder === "asc" ? "↑" : "↓") : "";
+    return "<a href='index.php?action=monitoring&sort={$column}&order={$newOrder}'>{$label} {$arrow}</a>";
+}
+
 ?>
 
 <div class="titreAdmin">
@@ -13,32 +29,25 @@ $orderTri = Utils::request("order");
 <div class="adminArticle">
     <div class="articleLine">
         <div class="title">
-            <a href="index.php?action=monitoring&sort=title&order=<?= $orderTri === "asc" ? "desc" : "asc"; ?>">
-                Titre <?= $sort === 'title' ? ($orderTri === 'asc' ? '↑' : '↓') : '' ?>
-            </a>
+            <?= generateSortLink("title", $sort, $orderTri, "Titre") ?>
         </div>
         <div class="views">
-            <a href="index.php?action=monitoring&sort=views&order=<?= $orderTri === "asc" ? "desc" : "asc" ?>">
-                Vues <?= $sort === 'views' ? ($orderTri === 'asc' ? '↑' : '↓') : '' ?>
-            </a>
+            <?= generateSortLink("views", $sort, $orderTri, "Vues") ?>
         </div>
         <div class="comments">
-            <a href="index.php?action=monitoring&sort=comments&order=<?= $orderTri === "asc" ? "desc" : "asc" ?>">
-                Commentaires <?= $sort === 'comments' ? ($orderTri === 'asc' ? '↑' : '↓') : '' ?>
-            </a>
+            <?= generateSortLink("comments", $sort, $orderTri, "Commentaires") ?>
         </div>
         <div class="date">
-            <a href="index.php?action=monitoring&sort=date&order=<?= $orderTri === "asc" ? "desc" : "asc" ?>">
-                date <?= $sort === 'date' ? ($orderTri === 'asc' ? '↑' : '↓') : '' ?>
-            </a>
+            <?= generateSortLink("date", $sort, $orderTri, "Date") ?>
         </div>
     </div>
-    <?php foreach ($articles as $article) { ?>
+
+    <?php foreach ($articles as $article) : ?>
         <div class="articleLine">
             <div class="title"><?= $article->getTitle() ?></div>
             <div class="views"><?= $article->getNbView() ?></div>
             <div class="comments"><?= $article->getNbComments() ?></div>
             <div class="date"><?= Utils::convertDateToFrenchFormat($article->getDateCreation()) ?></div>
         </div>
-    <?php } ?>
+    <?php endforeach; ?>
 </div>
