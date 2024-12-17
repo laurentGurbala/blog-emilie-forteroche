@@ -399,3 +399,38 @@ footer {
     color: white;
     background-color: var(--headerColor);
 }
+
+/**
+* Admin controller
+*/
+
+.commentList {
+    margin: 20px 0;
+    font-weight: bold;
+    color: white;
+}
+
+.articleTitle {
+    background: var(--headerColor);
+    padding: 10px;
+    text-align: center;
+}
+
+.commentList li {
+    display: flex;
+    gap: 30px;
+    padding: 10px;
+    background: var(--commentPaleColor);
+}
+
+.commentList li:nth-child(odd) {
+    background: var(--commentAltColor);
+}
+
+.commentContent {
+    flex-grow: 1;
+}
+
+.commentAction {
+    padding: 10px;
+}
