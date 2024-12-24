@@ -1,7 +1,7 @@
 <?php
 
-$sort = Utils::request("sort");
-$orderTri = Utils::request("order");
+$sort = Utils::request("sort", "date");
+$orderTri = Utils::request("order", "desc");
 
 /**
  * Génère un lien de tri pour une colonne donnée.
