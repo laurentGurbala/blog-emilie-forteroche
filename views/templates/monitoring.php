@@ -44,7 +44,11 @@ function generateSortLink(string $column, ?string $currentSort, ?string $current
 
     <?php foreach ($articles as $article) : ?>
         <div class="articleLine">
-            <div class="title"><?= $article->getTitle() ?></div>
+            <div class="title">
+                <a href="index.php?action=adminComments&articleId=<?= $article->getId() ?>">
+                    <?= $article->getTitle() ?>
+                </a>
+            </div>
             <div class="views"><?= $article->getNbView() ?></div>
             <div class="comments">
                 <a href="index.php?action=adminComments&articleId=<?= $article->getId() ?>">

@@ -236,12 +236,13 @@ class AdminController
 
         // Récupérer l'ID du commentaire
         $commentId = Utils::request("commentId", -1);
+        $articleId = Utils::request("articleId", -1);
 
         // Supprimer le commentaire
         $commentManager = new CommentManager();
         $commentManager->deleteCommentById($commentId);
 
         // Rediriger vers la page d'administration
-        Utils::redirect("admin");
+        Utils::redirect("adminComments", ["articleId" => "$articleId"]);
     }
 }
