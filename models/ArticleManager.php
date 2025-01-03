@@ -21,45 +21,42 @@ class ArticleManager extends AbstractEntityManager
         return $articles;
     }
 
-    public function getAllArticlesSorted(string $sort, string $order): array
+    /**
+     * Trie une liste d'articles en fonction de la colonne et de l'ordre spécifiés.
+     * 
+     * @param array $articles Liste des articles à trier.
+     * @param string $sort Colonne à utiliser pour le tri (ex. 'title', 'views').
+     * @param string $order Ordre de tri ('asc' ou 'desc').
+     * 
+     * @return array Liste triée des articles.
+     */
+    public function sortArticles(array $articles, string $sort, string $order): array
     {
         $sortableColumns = [
-            'title' => 'title',
-            'views' => 'nb_view',
-            'date' => 'date_creation',
-            'comments' => 'nb_comments'
+            'title' => 'getTitle',
+            'views' => 'getNbView',
+            'comments' => 'getNbComments',
+            'date' => 'getDateCreation'
         ];
 
-        // Vérifie que la colonne demandée est triable
         if (!isset($sortableColumns[$sort])) {
-            throw new Exception("Colonne de tri invalide : $sort");
+            throw new Exception("Colonne de tri invalide.");
         }
 
-        // Vérifie que l'ordre est valide
-        if (!in_array($order, ['asc', 'desc'])) {
-            $order = 'desc';
-        }
+        usort($articles, function ($a, $b) use ($sortableColumns, $sort, $order) {
+            $valueA = $a->{$sortableColumns[$sort]}();
+            $valueB = $b->{$sortableColumns[$sort]}();
 
-        // Construction de la requête SQL avec le calcul des commentaires
-        $sql = "SELECT a.*, 
-           (SELECT COUNT(*) FROM comment c WHERE c.id_article = a.id) AS nb_comments
-            FROM article a
-            ORDER BY {$sortableColumns[$sort]} $order
-        ";
-
-        // Exécute la requête
-        $result = $this->db->query($sql);
-
-        // Transforme chaque ligne en objet Article
-        $articles = [];
-        foreach ($result as $row) {
-            $article = new Article($row);
-            $article->setNbComments($row['nb_comments']);
-            $articles[] = $article;
-        }
+            if ($order === 'asc') {
+                return $valueA <=> $valueB; // Comparaison ascendante
+            } else {
+                return $valueB <=> $valueA; // Comparaison descendante
+            }
+        });
 
         return $articles;
     }
+
 
     /**
      * Récupère un article par son id.

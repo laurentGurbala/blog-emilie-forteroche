@@ -55,6 +55,28 @@ class CommentManager extends AbstractEntityManager
     }
 
     /**
+     * Compte le nombre de commentaires associés à un article spécifique.
+     *
+     * @param int $idArticle L'identifiant de l'article dont on souhaite connaître le nombre de commentaires.
+     * @return int Le nombre total de commentaires pour l'article donné. Retourne 0 si aucun commentaire n'est trouvé.
+     */
+    public function countCommentsByArticleId(int $idArticle): int
+    {
+        // Requête SQL pour compter le nombre de commentaires liés à un article spécifique
+        $sql = "SELECT COUNT(*) AS total FROM comment WHERE id_article = :id_article";
+
+        // Exécute la requête avec le paramètre fourni
+        $stmt = $this->db->query($sql, ["id_article" => $idArticle]);
+
+        // Récupère le résultat sous forme de tableau associatif
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Retourne le nombre total de commentaires ou 0 si aucun résultat n'est trouvé
+        return $result["total"] ?? 0;
+    }
+
+
+    /**
      * Supprime un commentaire.
      * @param Comment $comment : l'objet Comment à supprimer.
      * @return bool : true si la suppression a réussi, false sinon.
