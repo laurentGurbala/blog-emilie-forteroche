@@ -14,17 +14,15 @@
 
 <div class="commentList">
     <p class="articleTitle"><?= $article->getTitle() ?></p>
-    <ul>
-        <?php foreach ($comments as $comment): ?>
-            <li>
-                <p class="commentContent"><?= $comment->getContent() ?></p>
-                <div class="commentAction">
-                    <a class="submit" href="index.php?action=deleteComment&commentId=<?= $comment->getId() ?>&articleId=<?= $article->getId() ?>"
-                        <?= Utils::askConfirmation("Êtes-vous sûr de vouloir supprimer ce commentaire ?") ?>>
-                        Supprimer
-                    </a>
-                </div>
-            </li>
-        <?php endforeach ?>
-    </ul>
+    <form method="POST" action="index.php?action=deleteComment&articleId=<?= $article->getId() ?>">
+        <ul>
+            <?php foreach ($comments as $comment): ?>
+                <li>
+                    <input type="checkbox" name="comment_ids[]" id="comment_<?= $comment->getId() ?>" value="<?= $comment->getId() ?>">
+                    <p class="commentContent"><?= htmlspecialchars($comment->getContent()) ?></p>
+                </li>
+            <?php endforeach ?>
+        </ul>
+        <button class="submit" type="submit">Supprimer</button>
+    </form>
 </div>

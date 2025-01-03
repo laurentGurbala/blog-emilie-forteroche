@@ -88,10 +88,20 @@ class CommentManager extends AbstractEntityManager
         return $result->rowCount() > 0;
     }
 
-    public function deleteCommentById(int $commentId): bool
+    public function deleteMultiple(array $commentIds): bool
     {
-        $sql = "DELETE FROM comment WHERE id = :id";
-        $result = $this->db->query($sql, ["id" => $commentId]);
-        return $result->rowCount() > 0;
+        if (empty($commentIds)) {
+            return false; // Pas d'IDs à supprimer
+        }
+
+        // Créer les placeholders nécessaires
+        $placeholders = implode(',', array_fill(0, count($commentIds), '?'));
+        $sql = "DELETE FROM comment WHERE id IN ($placeholders)";
+
+        // Utiliser la méthode query pour exécuter la requête
+        $stmt = $this->db->query($sql, $commentIds);
+
+        // Vérifier si la requête a été exécutée avec succès
+        return $stmt !== false;
     }
 }

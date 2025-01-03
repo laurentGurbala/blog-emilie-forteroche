@@ -245,15 +245,25 @@ class AdminController
     {
         $this->checkIfUserIsConnected();
 
-        // Récupérer l'ID du commentaire
-        $commentId = Utils::request("commentId", -1);
-        $articleId = Utils::request("articleId", -1);
+        // Récupérer les IDs des commentaires à supprimer
+        $commentIds = Utils::request("comment_ids", []);
+        $articleId = Utils::request("articleId");
 
-        // Supprimer le commentaire
+        if (empty($commentIds)) {
+            Utils::redirect("adminComments", ["articleId" => $articleId]);
+            return;
+        }
+
+        // Supprimer les commentaires
         $commentManager = new CommentManager();
-        $commentManager->deleteCommentById($commentId);
+        $success = $commentManager->deleteMultiple($commentIds);
 
-        // Rediriger vers la page d'administration
-        Utils::redirect("adminComments", ["articleId" => "$articleId"]);
+        if ($success) {
+            // Rediriger avec un message de succès
+            Utils::redirect("adminComments", ["articleId" => $articleId]);
+            return;
+        } else {
+            throw new Exception("Erreur : Les commentaires n'ont pas pu être supprimés");
+        }
     }
 }
